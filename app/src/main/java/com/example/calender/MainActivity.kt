@@ -1,11 +1,17 @@
 package com.example.calender
 
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.annotation.RequiresApi
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,43 +28,50 @@ import com.example.calender.ui.theme.CalenderTheme
 import kotlinx.coroutines.launch
 import com.example.calender.http.Greeting
 import com.example.calender.http.Weather
+import com.example.calender.view.CalendarApp
 
 class MainActivity : ComponentActivity() {
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             CalenderTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    val scope = rememberCoroutineScope()
-                    var text: MutableState<List<Weather>?> = remember { mutableStateOf(null) }
-                    LaunchedEffect(true) {
-                        scope.launch {
-                            text.value = try {
-                                Greeting().greeting()
-                            } catch (e: Exception) {
-                                null
-//                                e.localizedMessage ?: "error"
-                            }
-                        }
-                    }
+//                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+//                    JsonView()
 
-                    if (text.value != null) {
-                        Text("${text.value}")
-                    }
-
-                }
+//                }
+                CalendarApp()
             }
         }
     }
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
+fun JsonView(modifier: Modifier = Modifier) {
+    val scope = rememberCoroutineScope()
+    var text: MutableState<List<Weather>?> = remember { mutableStateOf(null) }
+    LaunchedEffect(true) {
+        scope.launch {
+            text.value = try {
+                Greeting().greeting()
+            } catch (e: Exception) {
+                null
+//                                e.localizedMessage ?: "error"
+            }
+        }
+    }
+
+    if (text.value != null) {
+        LazyColumn {
+            items(text.value!!) { item: Weather ->
+                Row { Text("${item.day}日 最高気温${item.temperature.max}") }
+            }
+        }
+    } else {
+        Text("読み込んでいます。")
+    }
+
 }
 //
 //@Preview(showBackground = true)

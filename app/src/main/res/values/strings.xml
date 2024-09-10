@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Calender</string>
+    <string name="back">back\n</string>
+    <string name="next">next\n</string>
 </resources>

@@ -62,7 +62,8 @@ dependencies {
     implementation(libs.androidx.material3)
 
     implementation(libs.bundles.ktor)
-    implementation(libs.firebase.crashlytics.buildtools)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.navigation.compose)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
